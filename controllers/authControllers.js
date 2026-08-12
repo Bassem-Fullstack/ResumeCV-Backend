@@ -173,7 +173,7 @@ try{
 
 catch(err){
 
-return res.status(403).json({ message : "Invalid or expire Refresh Token"})
+return res.status(401).json({ message : "Invalid or expire Refresh Token"})
 
 }
 
@@ -189,7 +189,7 @@ const getUser = await User.findOne({
 
 if (!getUser) {
 
-  return res.status(403).json({ message: "Invalid Refresh Token" });
+  return res.status(401).json({ message: "Invalid Refresh Token" });
 
 }
 
