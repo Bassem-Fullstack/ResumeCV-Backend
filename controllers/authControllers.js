@@ -120,18 +120,14 @@ process.env.ACCESS_TOKEN ,
 )
 
 
-res.cookie("refreshToken" , refreshToken , {
-
-httpOnly : true ,
-
-sameSite : "none" ,
-
-secure : true ,
-
-maxAge : 30 * 24 * 60 * 60 * 1000
-
-
-})
+// في دالة loginUsers
+res.cookie("refreshToken", refreshToken, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  expires: new Date(Date.now() + 128 * 24 * 60 * 60 * 1000), // استخدام تاريخ صريح بدل رقم الملي ثانية
+  path: "/" // لضمان إرسال الكوكي مع كافة مسارات API
+});
 
 
 res.status(200).json({
