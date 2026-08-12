@@ -125,7 +125,7 @@ res.cookie("refreshToken", refreshToken, {
   httpOnly: true,
   secure: true,
   sameSite: "none",
-  expires: new Date(Date.now() + 128 * 24 * 60 * 60 * 1000), // استخدام تاريخ صريح بدل رقم الملي ثانية
+  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // استخدام تاريخ صريح بدل رقم الملي ثانية
   path: "/" // لضمان إرسال الكوكي مع كافة مسارات API
 });
 

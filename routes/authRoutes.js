@@ -28,7 +28,7 @@ router.post("/register" , validate(registerUser) , registerUsers )
 router.post("/login" , validate(loginUser) , loginUsers)
 
 
-router.post("/refershToken" , refershToken) 
+router.post("/refreshToken" , refershToken) 
 
 router.delete("/logout" , verifyToken , logout )
 
