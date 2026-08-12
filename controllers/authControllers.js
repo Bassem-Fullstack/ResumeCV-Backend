@@ -123,8 +123,8 @@ const isProduction = process.env.NODE_ENV === "production";
 
 res.cookie("refreshToken", refreshToken, {
   httpOnly: true,
-  secure: isProduction, 
-  sameSite: isProduction ? "none" : "lax", 
+  secure: true,        // 👈 إجباري طالما شغال عبر HTTPS / Cross-site
+  sameSite: "none",    // 👈 إجباري لربط دومينين مختلفين على Vercel
   path: "/",
   expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 });
