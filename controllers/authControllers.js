@@ -119,16 +119,15 @@ process.env.ACCESS_TOKEN ,
 
 )
 
-
+const isProduction = process.env.NODE_ENV === "production";
 // في دالة loginUsers
 res.cookie("refreshToken", refreshToken, {
   httpOnly: true,
-  secure: true,
-  sameSite: "none",
-  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // استخدام تاريخ صريح بدل رقم الملي ثانية
-  path: "/" // لضمان إرسال الكوكي مع كافة مسارات API
+  secure: isProduction, // 👈 تكون false في الـ Localhost وتكون true فقط على سيرفر الإنتاج (HTTPS)
+  sameSite: isProduction ? "none" : "lax", // 👈 تكون "lax" في الـ Localhost وتكون "none" في الإنتاج
+  path: "/",
+  expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 });
-
 
 res.status(200).json({
 
@@ -247,18 +246,14 @@ getUser.refreshTokens = undefined
 
 await getUser.save()
 
+const isProduction = process.env.NODE_ENV === "production";
 
-res.clearCookie("refreshToken" , {
-
-httpOnly : true ,
-
-sameSite : "none" ,
-
-secure : true ,
-
-
-
-})
+res.clearCookie("refreshToken", {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  path: "/" // 👈 مهم جداً تتأكد إن الـ path مكتوب هنا زي كود الإنشاء
+});
 
 
 res.status(200).json({
