@@ -120,11 +120,11 @@ process.env.ACCESS_TOKEN ,
 )
 
 const isProduction = process.env.NODE_ENV === "production";
-// في دالة loginUsers
+
 res.cookie("refreshToken", refreshToken, {
   httpOnly: true,
-  secure: isProduction, // 👈 تكون false في الـ Localhost وتكون true فقط على سيرفر الإنتاج (HTTPS)
-  sameSite: isProduction ? "none" : "lax", // 👈 تكون "lax" في الـ Localhost وتكون "none" في الإنتاج
+  secure: isProduction, 
+  sameSite: isProduction ? "none" : "lax", 
   path: "/",
   expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 });

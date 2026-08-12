@@ -34,7 +34,7 @@ if(!origin || origin.includes("http://localhost") || origin.endsWith(".vercel.ap
 
 // لو طلب جايلك من لوكيل هوست فروند اند او اخرة بينتهي بفيرسيل ابب او جايلك من بوست مان اسمحلوة يبعت طلب عادي لو جاي من بوست مان او من فيرسيل او من فروند اند 
 
-callback(null , true)
+callback(null , origin)
 
 }
 
