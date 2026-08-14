@@ -210,7 +210,9 @@ res.status(200).json({
 
 success : true ,
 
-accessToken : newAccessToken
+accessToken : newAccessToken , 
+
+userName : getUser.username
 
 })
 
