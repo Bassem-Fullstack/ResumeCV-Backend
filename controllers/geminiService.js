@@ -18,56 +18,37 @@ const generateCVContent = async ({ jobTitle , rawInput }) => {
 
 const model = genAI.getGenerativeModel({model : "gemini-flash-latest"})
 
-
 const prompt = `
+You are an expert system and professional resume (CV) writer.
+Your task is to craft a high-quality, professional, and ATS-friendly CV tailored to the target job title, based on provided user raw data.
 
-you are expert system and professional resume(CV) writer.
+Rules:
+1. SUMMARY: Write a concise, impactful summary consisting of exactly 2 full lines (approx 30-40 words) tailored to "${jobTitle}".
+2. SKILLS: Extract skills from provided data. IF few or no skills are provided, infer and add relevant industry-standard skills (hard & soft) based on target job title "${jobTitle}".
+3. EXPERIENCE: Format existing job roles cleanly with actionable bullet points. Do NOT invent fake companies or fake job titles. If no experience exists, return an empty array.
+4. STRICT CONTENT LIMITS: Focus ONLY on summary, experience, and skills. Do NOT include education, degrees, or false information.
+5. JSON STRUCTURE: Strictly return output matching the JSON structure below.
 
-Your task is to craft a high-quality , professional , and ATS-friendly CV
-
-tailored to the target job title , based only on provided user raw data. 
-
-
-Strict Rules : 
-
-1- Do Not fabricate , invent , or extrapolate any skills , experience or achievements
-
-not explicitly present in the provided data.
-
-2- If there is no work experience , focuse on highlighting relevant skills and education rather than inventing fake roles.
-
-3- Return the output EXCLUSIVELY as a valid JSON object . Do Not include 
-
-any intro , outro , conversational text , or markdown code blocks .
-
-4- Strictly follow this exach JSON structure : 
-
+JSON Structure:
 {
   "summary": "A concise, professional summary sentence/paragraph.",
-
   "experience": [
     {
       "position": "Job Title",
-
       "company": "Company Name",
-
       "duration": "Dates/Duration",
-
       "bullets": [
         "First bullet point highlighting an achievement or responsibility.",
-
-        "Second bullet point with actionable and quantified details."
+        "Second bullet point with actionable details."
       ]
     }
   ],
-  
   "skills": ["Skill 1", "Skill 2", "Skill 3"]
 }
 
-Target Job Title : ${jobTitle}
-
-User Data : ${ JSON.stringify(rawInput , null , 2)} ` 
-
+Target Job Title: ${jobTitle}
+User Data: ${JSON.stringify(rawInput, null, 2)}
+`;
 
 // null , 2)}  معناها رجعلي بيانات جيسون يكونوا تحت بعض عواميد مش صفوف جمب بعض دة الهدف من سطرين دولت نال و 2 يعني عواميد تحت بعض ميكونوش جمب بعض 
 
@@ -79,7 +60,7 @@ const result = await model.generateContent(prompt)
 const responseText = result.response.text()
 
 
-const removeText = responseText.replace(/```json|``` /g , "").trim()
+const removeText = responseText.replace(/```json|```/g , "").trim()
 
 // ساعات غباء اصطناعي لما تكتب بروميت وتقولوة ابعتلي ملف على هيئة جيسون يبعتهالك وفوق كدة نص مكتوب كلمة جيسون فوق الفايل وفوق المصفوفة والاوبجكيت بتاعك طبعا هتاخد فايل دة كوبي بيست زاي ماهو تيجي تبعتوة لجافا سكريبت وتحولوة لاوبجكيت
 
