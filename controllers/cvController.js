@@ -24,6 +24,8 @@ const {
 
     summary , 
 
+    address ,
+
     jobTitle , 
      
     experience ,
@@ -45,7 +47,7 @@ const {
 
 
 
-const rawInput = { fullName , email , phone , summary , jobTitle , experience , skills , education}
+const rawInput = { fullName , email , phone , address , summary , jobTitle , experience , skills , education}
  
 
 const aiResult = await buildCV({ jobTitle , rawInput })
@@ -97,6 +99,8 @@ const createCVManual = asyncHandler ( async ( req , res) => {
 
     summary , 
 
+    address,
+
     jobTitle , 
      
     experience ,
@@ -127,6 +131,8 @@ const rawInput = {
      email ,
 
      phone , 
+     
+     address,
 
     summary , 
 

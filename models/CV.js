@@ -41,6 +41,8 @@ rawInput : {
 
  phone  :  String ,
 
+ address : String ,
+
  summary : String ,
 
  experience : [
