@@ -43,6 +43,9 @@ JSON Structure:
       ]
     }
   ],
+
+
+  
   "skills": ["Skill 1", "Skill 2", "Skill 3"]
 }
 

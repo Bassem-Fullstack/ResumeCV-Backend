@@ -61,7 +61,12 @@ jobTitle ,
 
 rawInput ,
 
-generatedContent : aiResult ,
+generatedContent: {
+    summary: aiResult.summary,
+    experience: aiResult.experience,
+    skills: aiResult.skills,
+    education: education // 👈      بإيده هنا!
+  },
 
 createdVia : "ai" 
 
