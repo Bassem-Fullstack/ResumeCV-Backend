@@ -69,7 +69,7 @@ rawInput ,
 
     skills: aiResult.skills,
 
-    education: education
+    education: aiResult.education
 
   },
   
