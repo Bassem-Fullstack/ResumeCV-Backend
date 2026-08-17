@@ -112,7 +112,7 @@ certification : String ,
 
    ] ,
 
-   skills : [ String ], 
+   
   
 //   ["JavaScript", "Node.js", "MongoDB"] هتكتب كدة وساعتها تقدر تعرضهم تحت بعض او جمب بعض مش هتفرق
 
@@ -133,7 +133,13 @@ certification : String ,
 
  ] ,
 
+
+skills : [ String ], 
+
+
  } ,
+
+ 
 
  createdVia : {
 
