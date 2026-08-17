@@ -112,9 +112,26 @@ certification : String ,
 
    ] ,
 
-   skills : [ String ] 
+   skills : [ String ], 
   
 //   ["JavaScript", "Node.js", "MongoDB"] هتكتب كدة وساعتها تقدر تعرضهم تحت بعض او جمب بعض مش هتفرق
+
+ education : [
+
+ {
+  
+ school : String ,
+ 
+ degree : String ,
+
+ year : String ,
+
+certification : String ,
+ 
+
+ }
+
+ ] ,
 
  } ,
 
