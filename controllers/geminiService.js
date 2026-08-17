@@ -16,7 +16,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 const generateCVContent = async ({ jobTitle , rawInput }) => {
 
 
-const model = genAI.getGenerativeModel({model : "gemini-flash-latest"})
+const model = genAI.getGenerativeModel({model : "gemini-3.5-flash"})
 
 const prompt = `
 You are an expert system and professional resume (CV) writer.
