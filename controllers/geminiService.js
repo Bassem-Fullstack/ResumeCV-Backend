@@ -16,7 +16,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 const generateCVContent = async ({ jobTitle , rawInput }) => {
 
 
-const model = genAI.getGenerativeModel({model : "gemini-3.5-flash"})
+const model = genAI.getGenerativeModel({model : "gemini-2.5-flash"})
 const prompt = `
 You are an expert system and professional resume (CV) writer.
 Your task is to craft a high-quality, professional, and ATS-friendly CV tailored to the target job title, based on provided user raw data.
