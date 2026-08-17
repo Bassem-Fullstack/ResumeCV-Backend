@@ -17,7 +17,6 @@ const generateCVContent = async ({ jobTitle , rawInput }) => {
 
 
 const model = genAI.getGenerativeModel({model : "gemini-3.5-flash"})
-
 const prompt = `
 You are an expert system and professional resume (CV) writer.
 Your task is to craft a high-quality, professional, and ATS-friendly CV tailored to the target job title, based on provided user raw data.
@@ -26,10 +25,13 @@ Rules:
 1. SUMMARY: Write a concise, impactful 2-line summary (approx 30-40 words) that connects the target job title "${jobTitle}" with the user's past work experience and background provided in the raw data.
 2. SKILLS: Extract skills from provided data. IF few or no skills are provided, infer and add relevant industry-standard skills (hard & soft) based on target job title "${jobTitle}" and past experience.
 3. EXPERIENCE: Format existing job roles cleanly with actionable bullet points. Do NOT invent fake companies or fake job titles. If no experience exists, return an empty array.
-4. EDUCATION: Standardize, clean up, and professionally format raw education inputs strictly based on the user's provided input:
-   - "degree": Infer and expand the degree accurately (e.g., if user inputs "نظم معلومات" or "CS" -> "B.Sc. in Management Information Systems" / "B.Sc. in Computer Science"; if user inputs "دبلوم كهرباء" or "Technical Diploma" -> "Technical Diploma in Electrical Systems"). Do NOT assign a Bachelor's degree (B.Sc.) if the user clearly stated a diploma/secondary degree.
-   - "school": Expand school, institute, or university names professionally (e.g., "Obour" -> "Al Obour Higher Institute", "Cairo Univ" -> "Cairo University").
-   - "certification": Format grades/GPA clearly (e.g., "Grade: Very Good", "GPA: 3.4/4.0"). Return "" if none provided.
+4. EDUCATION: Standardize, clean up, and professionally format the user's education/degree inputs strictly as follows:
+   - "degree": Always format as a complete degree title. 
+     • For University/Higher Institutes -> ALWAYS prefix with "Bachelor's Degree in [Major]" or "B.Sc. in [Major]" (e.g., "Bachelor's Degree in Information Systems").
+     • For Technical/Industrial Diplomas -> ALWAYS format as "Technical Diploma in [Specialization]" (e.g., "Technical Diploma in Electrical Systems").
+     • Strict Rule: Do NOT assign a Bachelor's degree to a diploma graduate.
+   - "school": Expand school, institute, or university names professionally (e.g., "Obour" -> "Al-Obour Institutes", "Cairo Univ" -> "Cairo University").
+   - "certification": Format grades/GPA clearly if provided (e.g., "Grade: Very Good"). Return "" if none provided.
    - "year": Format graduation years cleanly (e.g., "2020 – 2024" or "2024").
    If no education exists, return an empty array [].
 5. STRICT CONTENT LIMITS: Focus ONLY on summary, experience, skills, and education. Do NOT invent false information.
@@ -50,17 +52,17 @@ JSON Structure:
   ],
   "education": [
     {
-      "degree": "Degree or Diploma Title (e.g., B.Sc. in Computer Science OR Technical Diploma in Electrical Systems)",
-      "school": "School, Institute, or University Name",
-      "certification": "Grade or summary (leave empty string if none)",
-      "year": "Graduation Year"
+      "degree": "Bachelor's Degree in Information Systems",
+      "school": "Al-Obour Institutes",
+      "certification": "Grade: Very Good",
+      "year": "2020 – 2024"
     }
   ],
   "skills": ["Skill 1", "Skill 2"]
 }
 
 Target Job Title: ${jobTitle}
-User Data: ${JSON.stringify(rawInput, null, 2)}`;
+User Data: ${JSON.stringify(rawInput, null, 2)} `;
 
 // null , 2)}  معناها رجعلي بيانات جيسون يكونوا تحت بعض عواميد مش صفوف جمب بعض دة الهدف من سطرين دولت نال و 2 يعني عواميد تحت بعض ميكونوش جمب بعض 
 
