@@ -18,8 +18,7 @@ const generateCVContent = async ({ jobTitle , rawInput }) => {
 
 const model = genAI.getGenerativeModel({model : "gemini-3.5-flash"})
 
-const prompt = 
-`
+const prompt = `
 You are an expert system and professional resume (CV) writer.
 Your task is to craft a high-quality, professional, and ATS-friendly CV tailored to the target job title, based on provided user raw data.
 
@@ -27,12 +26,13 @@ Rules:
 1. SUMMARY: Write a concise, impactful 2-line summary (approx 30-40 words) that connects the target job title "${jobTitle}" with the user's past work experience and background provided in the raw data.
 2. SKILLS: Extract skills from provided data. IF few or no skills are provided, infer and add relevant industry-standard skills (hard & soft) based on target job title "${jobTitle}" and past experience.
 3. EXPERIENCE: Format existing job roles cleanly with actionable bullet points. Do NOT invent fake companies or fake job titles. If no experience exists, return an empty array.
-4. EDUCATION: Extract and clean up the education data into 4 distinct fields:
-   - "degree": The qualification (e.g., "B.Sc. in Management Information Systems", "Bachelor of Engineering").
-   - "school": The university, college, or institute name (e.g., "Al Obour Institutes", "Cairo University").
-   - "certification": Any grade, GPA, or honors (e.g., "Grade: Very Good"). Leave empty string "" if none.
-   - "year": Graduation year or period (e.g., "2020 - 2024").
-   If no education data is provided, return an empty array [].
+4. EDUCATION: Standardize, fix spelling, and expand raw education inputs strictly based on the qualification level:
+   - "degree": Map accurately (e.g., "دبلوم صنايع/تجارة" -> "Technical Diploma in [Specialization]", "حاسبات/نظم" -> "B.Sc. in Computer Science / MIS"). Do NOT assign a Bachelor's degree (B.Sc.) to a diploma graduate.
+   - "school": Expand school, institute, or university names (e.g., "Industrial Secondary School", "Al Obour Institutes").
+   - "certification": Format grades/GPA clearly (e.g., "Grade: Very Good", "Grade: 85%"). Return "" if none.
+   - "year": Format graduation years (e.g., "2020 – 2024").
+   - "fullEducationString": Combine degree, school, certification, and year into one formatted line (e.g., "• Technical Diploma in Industrial Electricity — Cairo Technical School — Grade: Very Good 2020 – 2022").
+   If no education exists, return an empty array [].
 5. STRICT CONTENT LIMITS: Focus ONLY on summary, experience, skills, and education. Do NOT invent false information.
 6. JSON STRUCTURE: Strictly return output matching the JSON structure below without extra formatting or prose.
 
@@ -51,19 +51,18 @@ JSON Structure:
   ],
   "education": [
     {
-      "school": "University or Institution Name",
-      "degree": "Degree Title",
-      "year": "Graduation Year",
-      "certification": "Grade or summary"
+      "degree": "Degree or Diploma Title (e.g., B.Sc. in Computer Science OR Technical Diploma in Electricity)",
+      "school": "School, Institute, or University Name",
+      "certification": "Grade or summary (leave empty string if none)",
+      "year": "Graduation Year" ,
+      "fullEducationString": "• B.Sc. in Management Information Systems — Al Obour Institutes — Grade: Very Good 2020 – 2024"
     }
   ],
   "skills": ["Skill 1", "Skill 2"]
 }
 
 Target Job Title: ${jobTitle}
-User Data: ${JSON.stringify(rawInput, null, 2)}
-`;
-
+User Data: ${JSON.stringify(rawInput, null, 2)} `;
 
 // null , 2)}  معناها رجعلي بيانات جيسون يكونوا تحت بعض عواميد مش صفوف جمب بعض دة الهدف من سطرين دولت نال و 2 يعني عواميد تحت بعض ميكونوش جمب بعض 
 
