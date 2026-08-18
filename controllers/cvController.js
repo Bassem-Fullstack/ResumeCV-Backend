@@ -32,7 +32,9 @@ const {
 
     skills ,
 
-    education
+    education , 
+
+    languages
 
 }
  
@@ -47,7 +49,7 @@ const {
 
 
 
-const rawInput = { fullName , email , phone , address , summary , jobTitle , experience , skills , education}
+const rawInput = { fullName , email , phone , address , summary , jobTitle , experience , skills , education , languages}
  
 
 const aiResult = await buildCV({ jobTitle , rawInput })
@@ -69,7 +71,9 @@ rawInput ,
 
     skills: aiResult.skills,
 
-    education: aiResult.education
+    education: aiResult.education ,
+
+    languages ,
 
   },
   

@@ -137,6 +137,14 @@ certification : String ,
 skills : [ String ], 
 
 
+languages : [
+    {
+      name : String,      
+      level : String,     
+    }
+  ]
+
+
  } ,
 
  
