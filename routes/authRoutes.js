@@ -39,58 +39,67 @@ router.get("/google" , passPort.authenticate("google" , {
 }))
 
 
-router.get("/google/callback", (req, res, next) => {
-  const isProduction = process.env.NODE_ENV === "production";
+router.get ("/google/callback" 
+    
+, passPort.authenticate("google" , {
 
-  passPort.authenticate("google", { session: false }, async (err, user, info) => {
+  failureRedirect : `${process.env.CLIENT_URL}/` ,
 
-        console.log("1 - Passport finished");
-      console.log("err:", err);
-      console.log("user:", user?._id);
-      console.log("info:", info);
+  session : false 
+    
+}),
 
-    if (err || !user) {
-      console.error("Google Auth Error:", err || info);
-      return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
-    }
 
-    try {
-      // 1. إنشاء Access Token
-      const accessToken = jwt.sign(
-        { userId: user._id },
-        process.env.ACCESS_TOKEN,
-        { expiresIn: "15m" }
-      );
+async (req, res) => {
+  try {
 
-      // 2. إنشاء Refresh Token
-      const refreshToken = jwt.sign(
-        { userId: user._id },
-        process.env.REFRESH_TOKEN,
-        { expiresIn: "7d" }
-      );
+const isProduction = process.env.NODE_ENV === "production";   
 
-      // 3. حفظ الـ Refresh Token في الداتابيز
-      user.refreshTokens = user.refreshTokens || [];
-      user.refreshTokens.push(refreshToken);
-      await user.save();
 
-      const isProduction = process.env.NODE_ENV === "production";
+  const accessToken = jwt.sign(
 
+      { userID: req.user._id },
+
+      process.env.ACCESS_TOKEN,
+
+      { expiresIn: '15m' }
+    );
+
+    // 2. إنشاء Refresh Token (مده طويلة)
+    const refreshToken = jwt.sign(
+
+      { userID: req.user._id },
+
+      process.env.REFRESH_TOKEN,
+
+      { expiresIn: '7d' }
+    );
+
+
+   req.user.refreshTokens = refreshToken;
+
+    await req.user.save();
+
+
+    // 4. إرسال الـ Refresh Token في HTTP-Only Cookie
    res.cookie("refreshToken", refreshToken, {
-     httpOnly: true,
-     secure: isProduction,
-     sameSite: isProduction ? "none" : "lax",
-    path: "/",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
-      // 5. التوجيه للداشبورد مباشرة مع الـ Access Token
-      return res.redirect(`${process.env.CLIENT_URL}/dashboard?accessToken=${accessToken}`);
-    } catch (error) {
-      console.error("Callback Processing Error:", error);
-      return res.redirect(`${process.env.CLIENT_URL}/login?error=server_error`);
-    }
-  })(req, res, next);
-});
+
+    // 5. تحويل للفرونت ومعاه الـ Access Token فقط في الرابط
+    res.redirect(`${process.env.CLIENT_URL}/login?accessToken=${accessToken}`);
+  } catch (err) {
+    res.redirect(`${process.env.CLIENT_URL}/login`);
+  }
+}
+
+
+)
+
 
 
 
