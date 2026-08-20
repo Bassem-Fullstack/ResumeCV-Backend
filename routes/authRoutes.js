@@ -52,8 +52,8 @@ router.get ("/google/callback"
 
 async (req, res) => {
   try {
-    // 1. إنشاء Access Token (مده قصيرة)
-    const accessToken = jwt.sign(
+
+const isProduction = process.env.NODE_ENV === "production";    const accessToken = jwt.sign(
 
       { userId: req.user._id },
 
@@ -78,11 +78,12 @@ async (req, res) => {
     await req.user.save();
 
     // 4. إرسال الـ Refresh Token في HTTP-Only Cookie
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true, // يمنع JavaScript في الفرونت من قراءتها (أمان عالي)
-      secure: true ,  
-      sameSite: 'none',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 أيام
+   res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     // 5. تحويل للفرونت ومعاه الـ Access Token فقط في الرابط
