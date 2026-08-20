@@ -80,7 +80,7 @@ async (req, res) => {
     // 4. إرسال الـ Refresh Token في HTTP-Only Cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true, // يمنع JavaScript في الفرونت من قراءتها (أمان عالي)
-      secure: process.env.NODE_ENV === 'production', // تشتغل بس مع HTTPS
+      secure: true ,  
       sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 أيام
     });
