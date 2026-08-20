@@ -86,7 +86,7 @@ async (req, res) => {
     });
 
     // 5. تحويل للفرونت ومعاه الـ Access Token فقط في الرابط
-    res.redirect(`${process.env.CLIENT_URL}/login?accessToken=${accessToken}`);
+    res.redirect(`${process.env.CLIENT_URL}/dashboard?accessToken=${accessToken}`);
   } catch (err) {
     res.redirect(`${process.env.CLIENT_URL}/login`);
   }
