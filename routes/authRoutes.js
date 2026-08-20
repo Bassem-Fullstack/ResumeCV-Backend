@@ -40,8 +40,15 @@ router.get("/google" , passPort.authenticate("google" , {
 
 
 router.get("/google/callback", (req, res, next) => {
+  const isProduction = process.env.NODE_ENV === "production";
+
   passPort.authenticate("google", { session: false }, async (err, user, info) => {
-    // لو حصل خطأ في Passport أو Google مابعتتش مستخدم
+
+        console.log("1 - Passport finished");
+      console.log("err:", err);
+      console.log("user:", user?._id);
+      console.log("info:", info);
+
     if (err || !user) {
       console.error("Google Auth Error:", err || info);
       return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
@@ -67,15 +74,15 @@ router.get("/google/callback", (req, res, next) => {
       user.refreshTokens.push(refreshToken);
       await user.save();
 
-      // 4. إرسال الكوكي (تأكيد sameSite و secure عشان تشتغل على Vercel و Localhost)
-      res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: true,        // لازم true طالما الباك إند HTTPS على Vercel
-        sameSite: "none",    // لازم none طالما الفرونت والباك مختلفين
-        path: "/",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+      const isProduction = process.env.NODE_ENV === "production";
 
+   res.cookie("refreshToken", refreshToken, {
+     httpOnly: true,
+     secure: isProduction,
+     sameSite: isProduction ? "none" : "lax",
+    path: "/",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
       // 5. التوجيه للداشبورد مباشرة مع الـ Access Token
       return res.redirect(`${process.env.CLIENT_URL}/dashboard?accessToken=${accessToken}`);
     } catch (error) {
