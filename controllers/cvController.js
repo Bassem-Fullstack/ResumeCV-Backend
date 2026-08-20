@@ -213,7 +213,9 @@ res.status(200).json({
 
  success : true ,   
 
- getCV 
+ getCV ,
+
+ userName: req.user.name,
 
 })
 

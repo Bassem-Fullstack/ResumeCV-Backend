@@ -53,7 +53,10 @@ router.get ("/google/callback"
 async (req, res) => {
   try {
 
-const isProduction = process.env.NODE_ENV === "production";    const accessToken = jwt.sign(
+const isProduction = process.env.NODE_ENV === "production";   
+
+
+  const accessToken = jwt.sign(
 
       { userId: req.user._id },
 
