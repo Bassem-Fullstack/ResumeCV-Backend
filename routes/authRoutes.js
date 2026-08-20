@@ -39,66 +39,51 @@ router.get("/google" , passPort.authenticate("google" , {
 }))
 
 
-router.get ("/google/callback" 
-    
-, passPort.authenticate("google" , {
+router.get("/google/callback", (req, res, next) => {
+  passPort.authenticate("google", { session: false }, async (err, user, info) => {
+    // لو حصل خطأ في Passport أو Google مابعتتش مستخدم
+    if (err || !user) {
+      console.error("Google Auth Error:", err || info);
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=google_failed`);
+    }
 
-  failureRedirect : `${process.env.CLIENT_URL}/dashboard` ,
+    try {
+      // 1. إنشاء Access Token
+      const accessToken = jwt.sign(
+        { userId: user._id },
+        process.env.ACCESS_TOKEN,
+        { expiresIn: "15m" }
+      );
 
-  session : false 
-    
-}),
+      // 2. إنشاء Refresh Token
+      const refreshToken = jwt.sign(
+        { userId: user._id },
+        process.env.REFRESH_TOKEN,
+        { expiresIn: "7d" }
+      );
 
+      // 3. حفظ الـ Refresh Token في الداتابيز
+      user.refreshTokens = user.refreshTokens || [];
+      user.refreshTokens.push(refreshToken);
+      await user.save();
 
-async (req, res) => {
-  try {
+      // 4. إرسال الكوكي (تأكيد sameSite و secure عشان تشتغل على Vercel و Localhost)
+      res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: true,        // لازم true طالما الباك إند HTTPS على Vercel
+        sameSite: "none",    // لازم none طالما الفرونت والباك مختلفين
+        path: "/",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
-const isProduction = process.env.NODE_ENV === "production";   
-
-
-  const accessToken = jwt.sign(
-
-      { userId: req.user._id },
-
-      process.env.ACCESS_TOKEN,
-
-      { expiresIn: '15m' }
-    );
-
-    // 2. إنشاء Refresh Token (مده طويلة)
-    const refreshToken = jwt.sign(
-
-      { userId: req.user._id },
-
-      process.env.REFRESH_TOKEN,
-
-      { expiresIn: '7d' }
-    );
-
-  req.user.refreshTokens = req.user.refreshTokens || [];
-
-    req.user.refreshTokens.push(refreshToken);
-    await req.user.save();
-
-    // 4. إرسال الـ Refresh Token في HTTP-Only Cookie
-   res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    // 5. تحويل للفرونت ومعاه الـ Access Token فقط في الرابط
-    res.redirect(`${process.env.CLIENT_URL}/dashboard?accessToken=${accessToken}`);
-  } catch (err) {
-    res.redirect(`${process.env.CLIENT_URL}/login`);
-  }
-}
-
-
-)
-
+      // 5. التوجيه للداشبورد مباشرة مع الـ Access Token
+      return res.redirect(`${process.env.CLIENT_URL}/dashboard?accessToken=${accessToken}`);
+    } catch (error) {
+      console.error("Callback Processing Error:", error);
+      return res.redirect(`${process.env.CLIENT_URL}/login?error=server_error`);
+    }
+  })(req, res, next);
+});
 
 
 
