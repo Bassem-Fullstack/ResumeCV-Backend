@@ -18,6 +18,7 @@ const authRouters = require("./routes/authRoutes")
 
 const CVRouters = require("./routes/cvRoutes")
 
+require("./config/passport");
 
 const app = express()
 
