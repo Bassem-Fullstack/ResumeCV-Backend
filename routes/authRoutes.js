@@ -43,7 +43,7 @@ router.get ("/google/callback"
     
 , passPort.authenticate("google" , {
 
-  failureRedirect : `${process.env.CLIENT_URL}/login` ,
+  failureRedirect : `${process.env.CLIENT_URL}/dashboard` ,
 
   session : false 
     
