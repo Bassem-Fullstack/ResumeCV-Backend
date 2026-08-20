@@ -38,6 +38,7 @@ let user = await User.findOne({ email : profile.emails[0].value })
 
 if(!user) {
 
+const randomPassword = crypto.randomBytes(16).toString("hex");
 
 user = await User.create({
 
@@ -45,7 +46,9 @@ username : profile.displayName ,
 
 email : profile.emails[0].value ,
 
-password : null 
+password : randomPassword ,
+
+googleId: profile.id,
 
 })
 
