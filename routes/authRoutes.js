@@ -30,7 +30,7 @@ const passPort = require("passport")
 router.get("/google" , passPort.authenticate("google" , {
 
 
-    scope : ["profil" ,"email"] ,
+    scope : ["profile" ,"email"] ,
 
     session : false ,
 
