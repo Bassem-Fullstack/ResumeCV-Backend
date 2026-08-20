@@ -43,7 +43,7 @@ router.get ("/google/callback"
     
 , passPort.authenticate("google" , {
 
-  failureRedirect : `${process.env.CLIENT_URL}/` ,
+  failureRedirect : `${process.env.CLIENT_URL}/login` ,
 
   session : false 
     
@@ -86,7 +86,7 @@ async (req, res) => {
     });
 
     // 5. تحويل للفرونت ومعاه الـ Access Token فقط في الرابط
-    res.redirect(`${process.env.CLIENT_URL}/users/callback?accessToken=${accessToken}`);
+    res.redirect(`${process.env.CLIENT_URL}/login?accessToken=${accessToken}`);
   } catch (err) {
     res.redirect(`${process.env.CLIENT_URL}/login`);
   }
