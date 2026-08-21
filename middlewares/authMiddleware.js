@@ -17,7 +17,7 @@ const verifyToken = asyncHandler(async (req, res, next) => {
 
     const getUser = await User.findById(decode.userID).select("-password -refreshTokens")
 
-    if (!user) {
+    if (!getUser) {
       return res.status(401).json({ message: "User not found" })
     }
 
